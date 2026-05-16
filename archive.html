@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Archive — Rayna</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+
+    <nav>
+      <a href="index.html" class="nav-brand">Rayna</a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="archive.html" class="active">Archive</a>
+        <a href="about.html">About</a>
+        <a href="social.html">Social</a>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">☾</button>
+      </div>
+    </nav>
+
+    <main class="archive-section">
+      <h1>Archive</h1>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
+        记录每天做过的事、写过的文字、完成的项目——一个属于我自己的时间线。
+      </p>
+
+      <button class="btn-add" id="btnAddEntry">+ New Entry</button>
+
+      <!-- Entry Form (hidden by default) -->
+      <div class="archive-form" id="archiveForm" style="display:none;">
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input type="date" class="form-input" id="entryDate">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Title</label>
+          <input type="text" class="form-input" id="entryTitle" placeholder="做了什么？">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea class="form-textarea" id="entryNote" rows="3" placeholder="具体内容..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Image</label>
+          <input type="file" class="form-input" id="entryImage" accept="image/*">
+          <div class="image-preview" id="imagePreview" style="display:none;">
+            <img id="imagePreviewImg" src="" alt="Preview">
+            <button class="btn-remove-file" id="btnRemoveImage">&times;</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Document / File</label>
+          <input type="file" class="form-input" id="entryFile" accept=".pdf,.doc,.docx,.txt,.zip,.rar,.pptx,.xlsx">
+          <div class="file-preview" id="filePreview" style="display:none;">
+            <span class="file-name" id="filePreviewName"></span>
+            <button class="btn-remove-file" id="btnRemoveFile">&times;</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Related Link</label>
+          <input type="url" class="form-input" id="entryLink" placeholder="https://...">
+        </div>
+        <div class="form-actions">
+          <button class="btn-save" id="btnSave">Save</button>
+          <button class="btn-cancel" id="btnCancel">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Timeline -->
+      <div class="timeline" id="timeline"></div>
+
+    </main>
+
+    <footer>
+      <p>&copy; 2026 Rayna. Built with care.</p>
+    </footer>
+
+  </div>
+
+  <script src="js/blog.js"></script>
+  <script src="js/archive.js"></script>
+</body>
+</html>

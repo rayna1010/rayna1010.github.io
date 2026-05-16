@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rayna's Blog</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+
+    <nav>
+      <a href="index.html" class="nav-brand">Rayna</a>
+      <div class="nav-links">
+        <a href="index.html" class="active">Home</a>
+        <a href="archive.html">Archive</a>
+        <a href="about.html">About</a>
+        <a href="social.html">Social</a>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">☾</button>
+      </div>
+    </nav>
+
+    <main>
+
+      <!-- ── Essays ── -->
+      <section id="essaysSection">
+        <div class="section-header">Essays</div>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.5rem;">
+          一些长一点的思考。
+        </p>
+
+        <button class="btn-add" id="btnAddEssay">+ New Essay</button>
+
+        <!-- Essay Form (hidden by default) -->
+        <div class="archive-form" id="essayForm" style="display:none;">
+          <div class="form-group">
+            <label class="form-label">Title</label>
+            <input type="text" class="form-input" id="essayTitle" placeholder="文章标题">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date</label>
+            <input type="date" class="form-input" id="essayDate">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Content</label>
+            <textarea class="form-textarea" id="essayContent" rows="10" placeholder="在这里写正文..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Or upload a text file (.txt)</label>
+            <input type="file" class="form-input" id="essayFile" accept=".txt,.md,.text">
+            <div class="file-preview" id="essayFilePreview" style="display:none;">
+              <span class="file-name" id="essayFileName"></span>
+              <button class="btn-remove-file" id="btnRemoveEssayFile">&times;</button>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn-save" id="btnSaveEssay">Save</button>
+            <button class="btn-cancel" id="btnCancelEssay">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Essay Cards -->
+        <div class="social-cards" id="essayCards"></div>
+      </section>
+
+    </main>
+
+    <footer>
+      <p>&copy; 2026 Rayna. Built with care.</p>
+    </footer>
+
+  </div>
+
+  <script src="js/blog.js"></script>
+  <script src="js/essays.js"></script>
+</body>
+</html>
