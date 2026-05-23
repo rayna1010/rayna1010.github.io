@@ -25,7 +25,7 @@
 
   // ── Auth ──
   var MASTER_SALT = '::rayna-blog-salt';
-  var MASTER_PASSWORD = 'Cxy20111010';
+  var MASTER_PASSWORD = 'Cxy2803';
   var MASTER_HASH = btoa(MASTER_PASSWORD + MASTER_SALT).substring(0, 32);
 
   var STORED_HASH_KEY = 'blog-passhash';
