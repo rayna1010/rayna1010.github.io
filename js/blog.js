@@ -23,19 +23,46 @@
     });
   }
 
-  // ── Auth ──
-  var MASTER_SALT = '::rayna-blog-salt';
-  var MASTER_PASSWORD = 'Cxy2803';
-  var MASTER_HASH = btoa(MASTER_PASSWORD + MASTER_SALT).substring(0, 32);
+  // ── Auth (PBKDF2, irreversible) ──
+  var SALT = '::rayna-blog-salt';
+  var ITERATIONS = 210000;
+  // Pre-computed PBKDF2-SHA256 hash of the master password.
+  // The plaintext password is never stored or recoverable from this value.
+  var MASTER_HASH = '19919fcef3cde0216bf56b08dce987c599b0ef1e89bbbf2d929971483f6379aa';
 
   var STORED_HASH_KEY = 'blog-passhash';
 
-  function getStoredHash() {
-    return localStorage.getItem(STORED_HASH_KEY);
+  function ab2hex(buffer) {
+    return Array.prototype.map.call(new Uint8Array(buffer), function (b) {
+      return ('0' + b.toString(16)).slice(-2);
+    }).join('');
   }
 
-  function hashPassword(password) {
-    return btoa(password + MASTER_SALT).substring(0, 32);
+  function deriveKey(password) {
+    // Returns a Promise that resolves to the hex-encoded PBKDF2 digest
+    var encoder = new TextEncoder();
+    var keyMaterial = crypto.subtle.importKey(
+      'raw',
+      encoder.encode(password),
+      { name: 'PBKDF2' },
+      false,
+      ['deriveBits']
+    );
+
+    return keyMaterial.then(function (key) {
+      return crypto.subtle.deriveBits(
+        {
+          name: 'PBKDF2',
+          salt: encoder.encode(SALT),
+          iterations: ITERATIONS,
+          hash: 'SHA-256'
+        },
+        key,
+        256
+      );
+    }).then(function (bits) {
+      return ab2hex(bits);
+    });
   }
 
   function isUnlocked() {
@@ -59,32 +86,36 @@
       var pw = prompt('Enter password to unlock editing:');
       if (!pw) return;
 
-      var inputHash = hashPassword(pw);
-      var storedHash = getStoredHash();
+      deriveKey(pw).then(function (inputHash) {
+        var storedHash = localStorage.getItem(STORED_HASH_KEY);
 
-      // First-time setup
-      if (!storedHash) {
-        localStorage.setItem(STORED_HASH_KEY, MASTER_HASH);
-        storedHash = MASTER_HASH;
-      }
-
-      // Check against stored hash or master hash
-      if (inputHash === storedHash || inputHash === MASTER_HASH) {
-        // Re-seed with master hash to keep things consistent
-        if (inputHash === MASTER_HASH && storedHash !== MASTER_HASH) {
+        // First-time setup: seed with master hash
+        if (!storedHash) {
           localStorage.setItem(STORED_HASH_KEY, MASTER_HASH);
+          storedHash = MASTER_HASH;
         }
-        sessionStorage.removeItem('blog-fail-count');
-        unlock();
-      } else {
-        var count = parseInt(sessionStorage.getItem('blog-fail-count') || '0', 10) + 1;
-        sessionStorage.setItem('blog-fail-count', count);
-        if (count >= 10) {
-          alert("Don't try to change what I've written!");
+
+        if (inputHash === storedHash || inputHash === MASTER_HASH) {
+          // Re-seed with master hash to keep things consistent
+          if (inputHash === MASTER_HASH && storedHash !== MASTER_HASH) {
+            localStorage.setItem(STORED_HASH_KEY, MASTER_HASH);
+          }
+          sessionStorage.removeItem('blog-fail-count');
+          unlock();
         } else {
-          alert('Wrong password.');
+          var count = parseInt(sessionStorage.getItem('blog-fail-count') || '0', 10) + 1;
+          sessionStorage.setItem('blog-fail-count', count);
+          if (count >= 10) {
+            alert("Don't try to change what I've written!");
+          } else {
+            alert('Wrong password.');
+          }
         }
-      }
+
+        // Refresh button state after async auth completes
+        var btn = document.getElementById('authToggle');
+        if (btn) btn.textContent = isUnlocked() ? '🔓' : '🔒';
+      });
     }
   }
 
