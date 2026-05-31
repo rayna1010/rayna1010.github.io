@@ -1,0 +1,6 @@
+# GitHub Pages: 提供静态文件，但排除以下协作文档/工具文件，
+# 避免它们被部署到 https://rayna1010.github.io/ 上公开访问
+exclude:
+  - CLAUDE.md
+  - .claude/
+  - README.md
